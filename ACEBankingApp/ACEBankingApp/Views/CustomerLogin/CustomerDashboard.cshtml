@@ -1,0 +1,213 @@
+﻿@using ACEBankingApp.Models
+@model IEnumerable<ACEBankingApp.Models.AccountModel>
+@{
+    ViewBag.Title = "CustomerDashboard";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    var accounts = (IEnumerable<Account>)Session["AccountInfos"];
+    //var dataReturn = (IEnumerable<TransactionByCustomer>)Session["Transaction"];
+    var Summary = (IEnumerable<TransactionSummery>)Session["Summary"];
+}
+
+@if (Session["CustomerId"] != null)
+{
+    @Html.Hidden("CustomerId", Session["CustomerId"].ToString())
+}
+else
+{
+    Response.Redirect("/CustomerLogin/login");
+}
+<link href="~/Content/plugins/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<link href="~/Content/Chart.css" rel="stylesheet" />
+<style>
+    span {
+        color: green;
+    }
+</style>
+<span>Your Bank Account Information </span><br /><br />
+@*<div>@Session["AccountNo"].ToString();</div>
+    <div>@Session["AccountType"].ToString();</div>
+    <div>@Session["Amount"].ToString();</div>*@
+<div class="row">
+    <div class="col-md-4">
+        <div id="autoRefresh">
+            @if (accounts != null)
+            {
+                foreach (var acc in accounts)
+                {
+                    <div class="container">
+                        <div class="float-md-left" style="margin-left:40px">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h4>Total Amount-@acc.Amount.ToString("n0") Ks</h4>
+                                    <p>@acc.AccountType Account</p>
+                                    <p>Account Number - @acc.AccountNo</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                @*<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>*@
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                Response.Redirect("/CustomerLogin/login");
+            }
+        </div>
+    </div>
+   
+</div>
+
+
+<style>
+    #TableRefresh{
+        width:auto;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="TableRefresh">
+
+                @if (Summary != null)
+                {
+                    <table id="example1" class="table table-bordered table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>AccountNo</th>
+                                <th>AccountType</th>
+                                <th>TransactionAmount</th>
+                                <th>Flash</th>
+                                <th>TransactionType</th>
+                                <th>TransactionDate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dt in Summary)
+                {
+
+                                <tr>
+                                    <td>@dt.AccountNo</td>
+                                    <td>@dt.AccountType</td>
+                                    <td>@dt.TransactionAmount</td>
+                                    <td>@dt.Flash</td>
+                                    <td>@dt.TransactionType</td>
+                                    <td>@dt.TransactionDate</td>
+                                </tr>
+
+                            }
+                        </tbody>
+
+                    </table>
+                }
+
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+
+
+<script>
+  $(function () {
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": ture,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autowidth":true,
+      "scrollX":'100%'
+    });
+  });
+</script>
+
+<script type="text/javascript">
+    function preventBack() {
+        window.history.forward();
+    }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () {
+        null;
+    }
+
+    setInterval(function () {
+        $.ajax({
+            type: "POST",
+            url: '/CustomerLogin/GetAccountInfo',
+            data: { Id: $('#CustomerId').val() },
+            dataType: "json",
+            success: function (response) {
+                var content = "";
+                //$("#autoRefresh").html(content);
+                $.each(response.lstAccount, function (index, acc) {
+                    content +=
+                        `<div class="container">
+                <div class="float-md-left" style="margin-left:40px">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>${acc.Amount}</h3>
+                            <p>${acc.AccountType} Account</p>
+                            <p>${acc.CreateDate.ToString("dd/MM/yyyy")}</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>`;
+                });
+                console.log(content);
+                $("#autoRefresh").html(content);
+            }
+        });
+    }, 6000);
+</script>
+
+@*Summary*@<script type="text/javascript">
+    setInterval(function () {
+        $.ajax({
+            type: "POST",
+            url: '/CustomerLogin/GetTransactionSummery',
+            data: { Id: $('#CustomerId').val() },
+            dataType: "json",
+            success: function (response) {
+                var content = "";
+                //$("#autoRefresh").html(content);
+
+                $.each(response.lstTransactionSummery, function (index, dt) {
+                    content +=
+
+                        `<tbody><tr>
+                        <td>${Summary.CustomerName}</td>
+                        <td>${Summary.Transaction_id}</td>
+                        <td>${Summary.AccountNo}</td>
+                        <td>${Summary.AccountType}</td>
+                        <td>${Summary.TransactionAmount}</td>
+                        <td>${Summary.Flash}</td>
+                        <td>${Summary.TransactionType}</td>
+                        <td>${Summary.TransactionDate}</td>
+                            </tr></tbody>
+                            `;
+                });
+                console.log(content);
+                $("#TableRefresh").html(content);
+            }
+        });
+    }, 3000);
+</script>
+
+
+
+
+
+

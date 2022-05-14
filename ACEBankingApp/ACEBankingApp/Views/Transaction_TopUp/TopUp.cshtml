@@ -1,0 +1,123 @@
+﻿@model ACEBankingApp.Models.TopUp
+
+@{
+    ViewBag.Title = "TopUp";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="application/x-javascript">
+    addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    }
+</script>
+<link href="//fonts.googleapis.com/css?family=Josefin+Sans:300,400,600,700" rel="stylesheet">
+<link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+<link href="~/Content/dist/css/form.css" rel="stylesheet" />
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="bg-w3layouts-main">
+        <h2>TopUp Phone Bill</h2>
+        <div class="form-content-agileinfo">
+            <form action="#" method="post">
+                <div class="main-divs-agileits-w3layouts">
+                    <div class="bottom-w3-agileits-space form-text1">
+                        @Html.DropDownListFor(model => model.SenderAccountNo, ViewBag.lstaccount as SelectList, new { @class = "form-control", placeholder = "Enter Your Account No" })
+                    </div>
+                    <div class="bottom-w3-agileits-space form-text1">
+                   
+                            @Html.DropDownListFor(m => m.OperatorName, new List<SelectListItem> {
+                               new SelectListItem { Text="Ooredoo",Value="Ooredoo"},
+                               new SelectListItem { Text="MPT",Value="MPT"},
+                               new SelectListItem { Text="Telenor",Value="Telenor"}
+
+           }, "Select Operator", new { @class = "frm-field required sect",@id= "country1" })
+                            @Html.ValidationMessageFor(model => model.OperatorName, "", new { @class = "text-danger" })
+                            
+
+                    </div>
+                    <div class="bottom-w3-agileits-space form-text1">
+
+                        @Html.DropDownListFor(m => m.TransferAmount, new List<SelectListItem> {
+                               new SelectListItem { Text="1000",Value="1000"},
+                               new SelectListItem { Text="3000",Value="3000"},
+                               new SelectListItem { Text="5000",Value="5000"},
+                               new SelectListItem { Text="10000",Value="10000"},
+           }, "Select amount", new { @class = "frm-field required sect", @id = "TransferAmount" })
+                        @Html.ValidationMessageFor(model => model.TransferAmount, "", new { @class = "text-danger" })
+
+
+                    </div>
+                </div>
+
+               
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="button" class="btn btn-success" id="Topup">Mobile Topup</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+}
+
+
+<script>
+    $('#Topup').click(function () {
+        if ($.trim($("#country1").val()).length == 0) {
+            alert('Choose Operator');
+            return;
+        }
+        if ($.trim($("#SenderAccountNo").val()).length == 0) {
+            alert('Choose AccountID');
+            return;
+        }
+        if ($.trim($("#TransferAmount").val()).length == 0) {
+            alert('Choose Amount');
+            return;
+        }
+
+        var _reqModel = {
+            OperatorName: $('#country1').val(),
+            SenderAccountNo: $('#SenderAccountNo').val(),
+            TransferAmount: $('#TransferAmount').val(),
+        };
+
+        var message = "'" + _reqModel.SenderAccountNo + "', Topup'" + _reqModel.OperatorName + "','" + _reqModel.TransferAmount;
+        var pin = Math.round(Math.random() * 900000000000000).toString();
+        var newpin=pin.replace(/(\d{4})/g, '$1 ').replace(/(^\s+|\s+$)/);
+        ConfirmMessageBox("Are you sure?", message, function (confirmed) {
+            if (confirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: '/Transaction_TopUp/TopUp',
+                    data: { 'topup': _reqModel },
+                    dataType: "JSON",
+                    
+                    success: function (data) {
+                        if (data.msg.RespMessageType == "MS") {
+                            SuccessMessageBoxWithLink("Your Topup is Success |Pin -" + newpin, '/customerlogin/TopUpReport');
+                        }
+                        else if (response.msg.RespMessageType == "ME") {
+                            ErrorMessageBox(data.msg.RespMessageType);
+                        }
+                        else {
+                            ErrorMessageBox(data.msg.RespMessageType);
+                        }
+                    }
+                });
+            }
+            else {
+            }
+        });
+    });
+</script>
+

@@ -1,0 +1,140 @@
+﻿@model ACEBankingApp.Models.CreateTransfer
+
+@{
+    ViewBag.Title = "Transaction";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="application/x-javascript">
+    addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    }
+</script>
+<link href="//fonts.googleapis.com/css?family=Josefin+Sans:300,400,600,700" rel="stylesheet">
+<link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+<link href="~/Content/dist/css/form.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<h2>Transaction</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    @*<div class="form-horizontal">
+        <h4>CreateTransfer</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.SenderAccountNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SenderAccountNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SenderAccountNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReciverAccountNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ReciverAccountNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ReciverAccountNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TransferAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+           
+                @Html.ValidationMessageFor(model => model.TransferAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>*@
+
+
+    <div class="bg-w3layouts-main">
+        <h2>Transaction Form</h2>
+        <div class="form-content-agileinfo">
+            <form action="#" method="post">
+                <div class="main-divs-agileits-w3layouts">
+                    <div class="bottom-w3-agileits-space form-text1">
+                      @*  @Html.EditorFor(model => model.SenderAccountNo, new { htmlAttributes = new { @class = "form-control",placeholder="Enter Your Account No" } })*@
+                        @Html.DropDownListFor(model=> model.SenderAccountNo, ViewBag.lstaccount as SelectList, "Your Account No", new { @class = "form-control", placeholder = "Enter Your Account No" })
+                    </div>
+                    <div class="bottom-w3-agileits-space form-text1">
+                        @Html.EditorFor(model => model.ReceiverAccountNo, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Receiver Account No" } })
+                    </div>
+                </div>
+
+                <div class="main-divs-agileits-w3layouts">
+                    <div class="bottom-w3-agileits-space form-text1">
+                        @Html.EditorFor(model => model.TransferAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Amount" ,pattern = "[0-9]{4,8}", required = "required" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="button" class="btn btn-success" id="Transfer">Transfer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<script>
+    $('#Transfer').click(function () {
+        if ($.trim($("#SenderAccountNo").val()).length == 0) {
+            WarningMessageBox('Choose SenderAccountNo');
+            return;
+        }
+        if ($.trim($("#ReceiverAccountNo").val()).length == 0) {
+            WarningMessageBox('Choose ReceiverAccountNo');
+            return;
+        }
+        if ($.trim($("#TransferAmount").val()).length == 0) {
+            WarningMessageBox('Choose Amount');
+            return;
+        }
+
+        var _reqModel = {
+            SenderAccountNo: $('#SenderAccountNo').val(),
+            ReceiverAccountNo: $('#ReceiverAccountNo').val(),
+            TransferAmount: $('#TransferAmount').val(),
+        };
+
+        var message = "'" + _reqModel.SenderAccountNo + "', Transfer'" + _reqModel.ReceiverAccountNo + "','" + _reqModel.TransferAmount;
+
+        ConfirmMessageBox("Are you sure?", message, function (confirmed) {
+            if (confirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: '/Transaction_TopUp/Transaction',
+                    data: { 'transfer': _reqModel },
+                    dataType: "JSON",
+
+                    success: function (data) {
+                        if (data.msg.RespMessageType == "MS") {
+                            SuccessMessageBoxWithLink("Successful Transfer!!!", '/Customerlogin/customerdashboard');
+                        }
+                        else if (data.msg.RespMessageType == "ME") {
+                            ErrorMessageBox(data.msg.RespDesp);
+                        }
+                        else {
+                            ErrorMessageBox(data.msg.RespDesp);
+                        }
+                    }
+                });
+            }
+            else {
+            }
+        });
+    });
+</script>

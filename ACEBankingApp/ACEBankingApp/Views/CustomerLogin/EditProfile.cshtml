@@ -1,0 +1,93 @@
+﻿@model ACEBankingApp.Models.CustomerLoginViewModel
+
+@{
+    ViewBag.Title = "EditProfile";
+    Layout = "";
+}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<link href="~/Content/css/bootstrap.min.css" rel="stylesheet" media="all" />
+<link href="~/Content/profile/font-awesome.min.css" rel="stylesheet" type="text/css" media="all" />
+<meta name="keywords" content="Quick Register Form Responsive, Login form web template, Sign up Web Templates, Flat Web Templates, Login signup Responsive web template, Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+
+<link href="~/Content/profile/style.css" rel="stylesheet" />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+   
+
+    <div class="signupform">
+        <div class="container">
+            <div class="agile_info">
+                <div class="w3_info">
+                    <h2>Customer Profile</h2>
+                    <form action="#" method="post">
+                        <div class="right">
+                            <label>CustomerId</label><br /><br />
+                            <div>
+                              
+                                @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            </div><br />
+
+                        </div>
+
+                        <div class="right">
+                            <label>Customer Name</label><br /><br />
+                            <div>
+                               
+                                @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
+                            </div><br />
+
+                        </div>
+                        <div class="right">
+                            <label>Email Address</label><br /><br />
+                            <div>
+                              
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            </div>
+                        </div><br />
+
+                        <div class="right">
+                            <label>Phone No</label><br /><br />
+                            <div>
+                                
+                                @Html.EditorFor(model => model.Phoneno, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div><br />
+
+                        <div class="right">
+                            <label>NRC Number</label><br /><br />
+                            <div>
+                               
+                                @Html.EditorFor(model => model.NRC, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            </div>
+                        </div><br />
+
+                        <div class="right">
+                            <label>Address</label><br /><br />
+                            <div>
+                              
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div><br />
+                       <button type="submit" value="Edit" class="btn btn-info">Save</button>
+                    </form>
+                    <div class="clearfix"></div><br />
+                    <span><a href="/CustomerLogin/Customerhome"><i class="fa fa-arrow-left"></i>Back</a></span>
+                </div>
+                <div class="w3l_form">
+                    <div class="left_grid_info">
+                        <h3>Welcome</h3>
+                        <h3 style="color:orange">ADS Online Banking App</h3>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+        </div>
+      
+    </div>
+}

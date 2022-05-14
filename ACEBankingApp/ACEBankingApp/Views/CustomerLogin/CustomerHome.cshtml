@@ -1,0 +1,103 @@
+﻿@model ACEBankingApp.Models.CustomerLoginViewModel
+@{
+    ViewBag.Title = "CsutomerHome";
+    Layout = "";
+    }
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<link href="~/Content/css/bootstrap.min.css" rel="stylesheet" media="all" />
+<link href="~/Content/profile/font-awesome.min.css" rel="stylesheet" type="text/css" media="all"/>
+<meta name="keywords" content="Quick Register Form Responsive, Login form web template, Sign up Web Templates, Flat Web Templates, Login signup Responsive web template, Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+
+<link href="~/Content/profile/style.css" rel="stylesheet" />
+
+<body><style>
+  span{
+       font-size:15px;
+       color:orange;
+   }
+    </style>
+    @if (Session["CustomerId"] != null)
+    {
+        <div class="signupform">
+            <div class="container">
+
+                <div class="agile_info">
+                    <div class="w3_info">
+                        <h2>Customer Profile</h2>
+                        <form action="#" method="post">
+                            <div class="left margin">
+                                <label>Name</label><br /><br />
+                                <div>
+                                    <span><i class="fa fa-user" aria-hidden="true"></i></span>
+                                    <span>@Session["CustomerName"].ToString()</span>
+                                </div><br />
+
+                            </div>
+
+                            <div class="left margin">
+                                <label>Customer ID</label><br /><br />
+                                <div>
+                                    <span><i class="fa fa-user" aria-hidden="true"></i></span>
+                                    <span>@Session["CustomerId"].ToString()</span>
+                                </div><br />
+
+                            </div>
+                            <div class="right">
+                                <label>Email Address</label><br /><br />
+                                <div>
+                                    <span><i class="fa fa-user" aria-hidden="true"></i></span>
+                                    <span>@Session["Email"].ToString()</span>
+                                </div>
+                            </div><br />
+
+                            <div class="right">
+                                <label>Phone No</label><br /><br />
+                                <div>
+                                    <span><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                    <span>@Session["Phoneno"].ToString()</span>
+                                </div>
+                            </div><br />
+
+                            <div class="right">
+                                <label>NRC Number</label><br /><br />
+                                <div>
+                                    <span><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                    <span>@Session["NRC"].ToString()</span>
+                                </div>
+                            </div><br />
+
+                            <div class="text-left">
+                                <label>Address</label><br /><br />
+                                <div>
+                                    <span><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                    <span>@Session["Address"].ToString()</span>
+                                </div>
+                            </div><br />
+                            <a class="btn btn-info btn-block" href="@Url.Action("EditProfile","CustomerLogin")">Edit<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        </form>
+                        <div class="clearfix"></div>
+                        <span><a href="/CustomerLogin/CustomerDashboard"><i class="fa fa-arrow-left"></i>Back to Home</a></span>
+                    </div>
+                    <div class="w3l_form">
+                        <div class="left_grid_info">
+                            <h3>Welcome</h3>
+                            <h3 style="color:orange">ACE Online Banking App</h3>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+            </div>
+        </div>
+    }
+    else
+    {
+       Response.Redirect("/CustomerLogin/login");
+    }
+
+</body>
+     
+
